@@ -1,33 +1,49 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
-const hre = require("hardhat");
+const hre = require('hardhat');
+const colors = require('colors');
+require('dotenv').config();
+require("@nomicfoundation/hardhat-verify");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
-
-  const lockedAmount = hre.ethers.parseEther("0.001");
-
-  const lock = await hre.ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
-
-  await lock.waitForDeployment();
-
-  console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
-  );
+    const signers = await hre.ethers.getSigners();
+    const deployer = signers[0];
+    const contractFactory = await hre.ethers.getContractFactory('FundMe', deployer);
+    console.log(`正在部署合约...`.blue);
+    const contract = await contractFactory.deploy();
+    const contractDeployed = await contract.waitForDeployment();
+    const contractAddress = await contractDeployed.getAddress();
+    console.log(`合约部署成功，地址为：${contractAddress}`.green);
+    // await sleep(30000);
+    // await verify(contractAddress, []);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+async function verify(_contractAddress, args) {
+    console.log(`正在验证合约...`.blue);
+    console.log(`当前网络是${hre.network.name}`.yellow)
+    console.log(`apiKey是${process.env.ETHERSCAN_API_KEY}`.blue);
+    try {
+        await hre.run("verify:verify", {
+            address: _contractAddress,
+            constructorArguments: args,
+        });
+        console.log(`合约验证成功`.green);
+    } catch (error) { 
+        if (error.message.includes('Contract source code already verified')) {
+            console.log(`合约已经验证过`.yellow);
+        } else {
+            console.log(`合约验证失败`.red);
+            console.log(error);
+        }
+    }
+}
+
+main()
+    .then(() => process.exit(0))
+    .catch(error => {
+        console.error(error);
+        process.exit(1);
+    }
+);

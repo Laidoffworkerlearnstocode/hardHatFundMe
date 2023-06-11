@@ -10,9 +10,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "hardhat": "^2.15.0"
+    "@chainlink/contracts": "^0.6.1",
+    "@nomicfoundation/hardhat-verify": "^1.0.1",
+    "hardhat": "^2.15.0",
+    "solhint": "^3.4.1"
   },
   "dependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^3.0.0"
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "colors": "^1.4.0",
+    "dotenv": "^16.1.4"
   }
 }
