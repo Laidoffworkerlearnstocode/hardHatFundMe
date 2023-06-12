@@ -3,11 +3,25 @@ const colors = require('colors');
 require('dotenv').config();
 require("@nomicfoundation/hardhat-verify");
 
+let ethUsdPriceFeedAddress = '';
+
 async function main() {
     const signers = await hre.ethers.getSigners();
     const deployer = signers[0];
     console.log(`正在部署合约...`.blue);
-    const ethUsdPriceFeedAddress = hre.network.config.ethUsdPriceFeed;
+    //如果在development环境下就部署MockV3Aggregator的priceFeed合约
+    if (hre.network.name === 'hardhat' || hre.network.name === 'localhost') {
+        console.log(`当前网络是${hre.network.name},开始部署MockV3Aggregator`.yellow)
+        const initialAnswer = 2000 * (10**8);
+        const decimals = 8; 
+        const MockV3Aggregator = await hre.ethers.deployContract('MockV3Aggregator',[decimals, initialAnswer] ,deployer);
+        ethUsdPriceFeedAddress = await MockV3Aggregator.getAddress();
+        console.log(`MockV3Aggregator部署成功,地址为：${ethUsdPriceFeedAddress},开始部署FundMe合约`.green);
+    } else {
+        //如果不在development环境下就根据配置中对应network的ethUsdPriceFeed地址部署
+        ethUsdPriceFeedAddress = hre.network.config.ethUsdPriceFeed;
+        console.log(`当前网络是${hre.network.name},ethUsdPriceFeedAddress:${ethUsdPriceFeedAddress},开始部署FundMe合约`.yellow);
+    }
     const contract = await hre.ethers.deployContract('FundMe', [ethUsdPriceFeedAddress], deployer);
     const contractAddress = await contract.getAddress();
     console.log(`合约部署成功，地址为：${contractAddress}`.green);

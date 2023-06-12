@@ -11,6 +11,7 @@ module.exports = {
 			accounts: [process.env.SEPOLIA_PRIVATE_KEY],
 			chainId: 11155111,
 			ethUsdPriceFeed: process.env.SEPOLIA_PRICE_FEED_CONTRACT,
+			gasPrice: "auto"
 		},
 		localhost: {
 			url: "http://127.0.0.1:8545/",
@@ -18,7 +19,7 @@ module.exports = {
 			chainId: 31337,
 		}
 	},
-	solidity: "0.8.18",
+	solidity: "0.8.8",
 	etherscan: {
 		apiKey: process.env.ETHERSCAN_API_KEY,
 	},
