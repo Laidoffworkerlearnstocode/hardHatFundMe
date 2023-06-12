@@ -6,11 +6,10 @@ require("@nomicfoundation/hardhat-verify");
 async function main() {
     const signers = await hre.ethers.getSigners();
     const deployer = signers[0];
-    const contractFactory = await hre.ethers.getContractFactory('FundMe', deployer);
     console.log(`正在部署合约...`.blue);
-    const contract = await contractFactory.deploy();
-    const contractDeployed = await contract.waitForDeployment();
-    const contractAddress = await contractDeployed.getAddress();
+    const ethUsdPriceFeedAddress = hre.network.config.ethUsdPriceFeed;
+    const contract = await hre.ethers.deployContract('FundMe', [ethUsdPriceFeedAddress], deployer);
+    const contractAddress = await contract.getAddress();
     console.log(`合约部署成功，地址为：${contractAddress}`.green);
     // await sleep(30000);
     // await verify(contractAddress, []);

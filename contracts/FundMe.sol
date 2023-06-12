@@ -44,7 +44,7 @@ contract FundMe {
     }
 
     modifier onlyOwner() {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "you are not owner!");
         _;
     }
 

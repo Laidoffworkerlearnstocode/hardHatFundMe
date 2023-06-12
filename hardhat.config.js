@@ -10,6 +10,7 @@ module.exports = {
 			url: process.env.SEPOLIA_RPC_URL,
 			accounts: [process.env.SEPOLIA_PRIVATE_KEY],
 			chainId: 11155111,
+			ethUsdPriceFeed: process.env.SEPOLIA_PRICE_FEED_CONTRACT,
 		},
 		localhost: {
 			url: "http://127.0.0.1:8545/",
