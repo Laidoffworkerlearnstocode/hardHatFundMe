@@ -11,7 +11,7 @@ async function main() {
     console.log(`正在部署合约...`.blue);
     //如果在development环境下就部署MockV3Aggregator的priceFeed合约
     if (hre.network.name === 'hardhat' || hre.network.name === 'localhost') {
-        console.log(`当前网络是${hre.network.name},开始部署MockV3Aggregator`.yellow)
+        console.log(`当前网络是${hre.network.name},开始部署MockV3Aggregator`.yellow);
         const initialAnswer = 2000 * (10**8);
         const decimals = 8; 
         const MockV3Aggregator = await hre.ethers.deployContract('MockV3Aggregator',[decimals, initialAnswer] ,deployer);
@@ -31,11 +31,11 @@ async function main() {
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
-    }
+}
 
 async function verify(_contractAddress, args) {
     console.log(`正在验证合约...`.blue);
-    console.log(`当前网络是${hre.network.name}`.yellow)
+    console.log(`当前网络是${hre.network.name}`.yellow);
     console.log(`apiKey是${process.env.ETHERSCAN_API_KEY}`.blue);
     try {
         await hre.run("verify:verify", {
@@ -59,4 +59,4 @@ main()
         console.error(error);
         process.exit(1);
     }
-);
+    );
