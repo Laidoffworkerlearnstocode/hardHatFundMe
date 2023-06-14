@@ -4,6 +4,10 @@ pragma solidity ^0.8.8;
 import "./priceConverter.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
+/// @title A contract for crowd funding
+/// @author laidOffWorkerLeansToCode
+/// @notice This contract is to demo a sample crowd funding contract
+/// @dev This implements price feeds as our library
 contract FundMe {
     uint256 public minimumContribution = 50 * 1e18;
 
@@ -12,6 +16,12 @@ contract FundMe {
     address public owner;
     
     AggregatorV3Interface public priceFeed;
+
+    error FundMe_NotOwner(string message);
+    modifier onlyOwner() {
+        if (msg.sender != owner) revert FundMe_NotOwner("Only owner can call this function.");
+        _;
+    }
 
     constructor(address priceFeedAddress) {
         owner = msg.sender;
@@ -41,11 +51,6 @@ contract FundMe {
             value: address(this).balance
         }("");
         require(success, "Failed to withdraw funds from contract");
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == owner, "you are not owner!");
-        _;
     }
 
     receive() external payable {

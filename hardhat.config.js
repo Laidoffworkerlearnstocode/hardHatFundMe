@@ -1,5 +1,6 @@
-require("@nomicfoundation/hardhat-toolbox");
 require("@nomicfoundation/hardhat-verify");
+require("@nomicfoundation/hardhat-ethers");
+require('solidity-coverage')
 require('dotenv').config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
