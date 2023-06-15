@@ -11,13 +11,14 @@ describe('FundMe', async function() {
     let ethUsdPriceFeedAddress;
     let MockV3Aggregator;
     let contract;
+    let deployer;
 
     beforeEach(async function() {
         //deploy fundMe contract
         async function main() {
             const signers = await hre.ethers.getSigners();
-            const deployer = signers[0];
-            console.log(`正在部署合约...`.blue);
+            deployer = signers[0];
+            console.log(`正在部署合约,deployer:${deployer.address}`.yellow);
             //如果在development环境下就部署MockV3Aggregator的priceFeed合约
             if (hre.network.name === 'hardhat' || hre.network.name === 'localhost') {
                 console.log(`当前网络是${hre.network.name},开始部署MockV3Aggregator`.yellow);
@@ -52,6 +53,17 @@ describe('FundMe', async function() {
             const ethValue = hre.ethers.parseEther("0.0001");
             await expect(contract.fund({value: ethValue})).to.be.revertedWith("You need to spend more ETH!");
             const ethValue2 = hre.ethers.parseEther("0.1");
+            //debug
+            // console.log(`ethValue2:${ethValue2}`);
+            // const conversionRate = await PriceConverter.getConversionRate(ethValue2, priceFeed);
+            // console.log(`Conversion rate: ${conversionRate}`);
+            // console.log(`Number of funders before: ${funders.length}`);
+            // console.log(`Funded amount before: ${addressToAmountFunded[msg.sender]}`);
+            // const receipt = await contract.fund({value: ethValue2});
+            // console.log(`Number of funders after: ${funders.length}`);
+            // console.log(`Funded amount after: ${addressToAmountFunded[msg.sender]}`);
+            // console.log(`Transaction receipt: ${JSON.stringify(receipt)}`);
+            
             await expect(contract.fund({value: ethValue2})).to.not.be.reverted;
         });
     });
